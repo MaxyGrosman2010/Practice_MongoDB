@@ -1,2 +1,4 @@
 # Practice_MongoDB
-Repository created for the purpose of learning to use MongoDB
+#### Repository created for the purpose of learning to use MongoDB
+## <br>Data Structure MongoDB
+#### There are collections of data, example you can have user, post and comments collections, this are saved on their own collection. You can retreieve all the documents inside of one of these collections.<br>Each document contains one user, post comment, etc. Inside the document it looks like a JSON, but it's keep inside a bson, which is a binary JSON, and for all intent and purpuse, the document it looks like a JSON and it's ultimate what we get. Each document has it's own id property which is it's special unique Mongo ID type assign to the document by MongoDB it's self for easier identification on "_id" value.<br> Documents can have properties which are documents themselves, in those case these are call nested documents.<br><br>
