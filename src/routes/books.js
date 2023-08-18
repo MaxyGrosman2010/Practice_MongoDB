@@ -1,4 +1,7 @@
 const express = require('express');
-const getBooks = require();
+const router = express.Router();
+const {getBooks} = require('../handlers/handler.books');
 
-express.get('/books', getBooks());
+router.get(getBooks());
+
+module.exports = router;
