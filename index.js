@@ -34,20 +34,42 @@ connect((error) => {
 });
 
 server.get('/books/', (req, res) => {
+    const {page} = req.query;
+    const booksPerPage = 3;
     let books = [];
-    db.collection('books').find().sort({author: 1})
+    db.collection('books').find().sort({author: 1}).skip(page * booksPerPage).limit(booksPerPage)
         .forEach((book) => books.push(book)).then(() => res.status(200).json(books))
-        .catch((error) => {
-            res.status(500).json(error)
-        }); //Gets a max of 100 documents
+        .catch((error) => res.status(500).json(error)); //Gets a max of 100 documents
 });
 server.get('/book/:id', (req, res) => {
+    const {id} = req.params || 0;
+    let mongoId = new ObjectId(id);
+    if(ObjectId.isValid(id)){//Suppose to stop from accessing with bad ids... It doesn't work 
+        db.collection('books').findOne({_id: mongoId}).then((response) => res.status(200).json(response))
+        .catch((error) => res.status(500).json(error));
+    }else return res.status(404).json({message: "The id isn't valid"});
+});
+server.post('/book/update', (req, res) => {
+    const {book} = req.body;
+    db.collection('books').insertOne(book).then((result) => res.status(200).json(result))
+    .catch((error) => res.status(500).json(error));
+});
+server.delete('/book/delete/:id', (req, res) => {
     const {id} = req.params;
     let mongoId = new ObjectId(id);
-    if(ObjectId.isValid(id)){
-        db.collection('books').findOne({_id: mongoId})
-        .then((response) => res.status(200).json(response))
+    if(ObjectId.isValid(id)){//Suppose to stop from accessing with bad ids... It doesn't work 
+        db.collection('books').deleteOne({_id: mongoId}).then((response) => res.status(200).json(response))
         .catch((error) => res.status(500).json(error));
+    }else return res.status(404).json({message: "The id isn't valid"});
+});
+
+server.patch('/book/update/:id', (req, res) => {
+    const {update} = req.body;
+    const {id} = req.params;
+    let mongoId = new ObjectId(id);
+    if(ObjectId.isValid(id)){//Suppose to stop from accessing with bad ids... It doesn't work 
+        db.collection('books').updateOne({_id: mongoId}, {$set: update})
+        .then((response) => res.status(200).json(response)).catch((error) => res.status(500).json(error));
     }else return res.status(404).json({message: "The id isn't valid"});
 });
 
